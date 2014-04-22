@@ -1,0 +1,11 @@
+\.orig$
+\.rej$
+etc/.*\.(conf|yml)$
+\.DS_Store
+~$
+pkg/
+^ChangeLog$
+^docs/
+^coverage/
+lib/symphony/metronome/intervalexpression.rb
+
