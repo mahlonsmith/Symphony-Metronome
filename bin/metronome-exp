@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+# vim: set nosta noet ts=4 sw=4:
+#
+# Simplistic interval expression tester.
+#
+
+require 'symphony/metronome'
+
+loop do
+	begin
+		exp = gets.chomp
+		next if exp.empty?
+
+		begin
+			parsed = Symphony::Metronome::IntervalExpression.parse( exp )
+			puts "OK:"
+			puts "\tvalid     | %s" % [ parsed.valid ]
+			puts "\trecurring | %s" % [ parsed.recurring ]
+			puts "\tstarting  | %s" % [ parsed.starting ]
+			puts "\tinterval  | %s" % [ parsed.recurring ? parsed.interval : '-' ]
+			puts "\tending    | %s" %
+				[ parsed.ending ? parsed.ending : (parsed.recurring ? 'never' : '-') ]
+
+		rescue => err
+			puts "NOPE: (%s) %s" % [ exp, err.message ]
+		end
+
+		puts
+
+	rescue Interrupt
+		exit 0
+	end
+end
