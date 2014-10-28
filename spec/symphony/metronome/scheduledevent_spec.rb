@@ -107,11 +107,27 @@ describe Symphony::Metronome::ScheduledEvent do
 			expect( ev.runtime ).to be >= time + 3600 + 30
 		end
 
+		it 'can reschedule itself into the future when recurring (recently run)' do
+			ds.insert(
+				:created    => time,
+				:expression => 'every 30 seconds',
+				:options    => "",
+				:lastrun    => time - 12
+			)
+			ev = described_class.new( ds.first )
+
+			Timecop.travel( time ) do
+				ev.reset_runtime
+			end
+
+			expect( ev.runtime ).to be >= time + 18
+		end
+
 		it 'removes itself when firing if expired' do
 			ds.insert(
 				:created    => time,
 				:expression => 'every 30 seconds for an hour',
-				:options     => ""
+				:options    => ""
 			)
 			ev = described_class.new( ds.first )
 
@@ -123,7 +139,7 @@ describe Symphony::Metronome::ScheduledEvent do
 			ev = described_class.new(
 				:created    => time,
 				:expression => 'every 30 seconds',
-				:options     => '{"excitement_level":12}'
+				:options    => '{"excitement_level":12}'
 			)
 
 			res = 0
@@ -132,6 +148,26 @@ describe Symphony::Metronome::ScheduledEvent do
 			end
 
 			expect( res ).to be( 12 )
+		end
+
+		it "won't re-fire recurring events if they already fired within their interval window" do
+			ds.insert(
+				:created    => time,
+				:expression => 'every 30 seconds',
+				:options    => '{"excitement_level":12}',
+				:lastrun    => time - 12
+			)
+			ev = described_class.new( ds.first )
+
+			res = 0
+			Timecop.travel( time ) do
+				rv = ev.fire do |opts, id|
+					res = opts['excitement_level']
+				end
+				expect( rv ).to be_falsey
+			end
+
+			expect( res ).to be( 0 )
 		end
 
 		it 'randomizes start times if a splay is configured' do
