@@ -10,7 +10,7 @@ class Lastrun < Sequel::Migration
 
 	def up
 		if @db.adapter_scheme == :postgres
-			add_column :metronome, :lastrun, timestamptz
+			add_column :metronome, :lastrun, 'timestamptz'
 		else
 			add_column :metronome, :lastrun, DateTime
 		end
