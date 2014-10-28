@@ -9,7 +9,7 @@ module Symphony::Metronome
 	       Configurability
 
 	# Library version constant
-	VERSION = '0.1.0'
+	VERSION = '0.2.0'
 
 	# Version-control revision constant
 	REVISION = %q$Revision$
@@ -73,7 +73,6 @@ module Symphony::Metronome
 		raise LocalJumpError, "No block provided." unless block_given?
 		return Symphony::Metronome::Scheduler.run( &block )
 	end
-
 
 end # Symphony::Metronome
 
