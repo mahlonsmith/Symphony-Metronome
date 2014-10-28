@@ -126,7 +126,7 @@ class Symphony::Metronome::Scheduler
 	end
 
 
-	### Process all event that have reached their runtime.
+	### Process all events that have reached their runtime.
 	###
 	def process_events
 		now = Time.now
