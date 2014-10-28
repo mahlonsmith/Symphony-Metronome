@@ -9,11 +9,6 @@ describe Symphony::Metronome::Scheduler do
 		described_class.configure
 	end
 
-	it 'spins up an AMQP listener by default' do
-
-		# described_class.run {}
-		# expect( described_class.listen ).to eq( :sd )
-
-	end
+	# needs tests
 end
 

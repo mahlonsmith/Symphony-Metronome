@@ -179,9 +179,13 @@ class Symphony::Metronome::ScheduledEvent
 			# a HUP.
 			#
 			if self.event.recurring
-				now  = Time.now
-				last = self.ds.first[ :lastrun ]
-				return false if last && now - last < self.event.interval
+				now = Time.now
+				row = self.ds.first
+
+				if row
+					last = row[ :lastrun ]
+					return false if last && now - last < self.event.interval
+				end
 
 				# Mark the time this recurring event was fired.
 				self.ds.update( :lastrun => Time.now )
