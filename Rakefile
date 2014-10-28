@@ -140,4 +140,5 @@ lib/symphony/metronome/mixins.rb
 lib/symphony/metronome/intervalexpression.rb
 lib/symphony/metronome/scheduledevent.rb
 data/symphony-metronome/migrations/20140419_initial.rb
+data/symphony-metronome/migrations/20141028_lastrun.rb
 README.rdoc

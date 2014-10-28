@@ -50,7 +50,7 @@ Symphony connection information:
 
 == Adding Actions
 
-There are two primary components to Metronome -- getting actions into
+There are two primary components to Metronome -- getting schedules into
 its database, and performing some task with those actions when the time
 is appropriate.
 
@@ -74,6 +74,15 @@ If you'd prefer not to use the AMQP listener, you can put actions into
 Metronome using any database methodology you please.  When the daemon
 starts up or receives a HUP signal, it will re-read and schedule out
 upcoming work.
+
+
+== Performing Work
+
+Calling 'run' on the Metronome class is a blocking call, waking up upon
+a scheduled event.  The run method expects a ruby block, and it receives
+the payload and the database ID of the scheduled event.  Metronome is
+unopinioned, what you do within this block is entirely up to you.  See
+the Synopsis section above for some examples.
 
 
 == Options

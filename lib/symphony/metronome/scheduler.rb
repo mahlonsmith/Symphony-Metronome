@@ -18,7 +18,7 @@ class Symphony::Metronome::Scheduler
 	SIGNALS = [ :HUP, :INT, :TERM ]
 
 	CONFIG_DEFAULTS = {
-		:listen => true
+		:listen => false
 	}
 
 	class << self

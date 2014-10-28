@@ -24,8 +24,8 @@ class Symphony::Metronome::ScheduledEvent
 	# Configure defaults.
 	#
 	CONFIG_DEFAULTS = {
-		db: 'sqlite:///tmp/metronome.db',
-		splay: 0
+		:db    => 'sqlite:///tmp/metronome.db',
+		:splay => 0
 	}
 
 	class << self
@@ -52,6 +52,7 @@ class Symphony::Metronome::ScheduledEvent
 		#
 		migrations_dir = Symphony::Metronome::DATADIR + 'migrations'
 		unless Sequel::Migrator.is_current?( self.db, migrations_dir.to_s )
+			Loggability[ Symphony ].info "Installing database schema..."
 			Sequel::Migrator.apply( self.db, migrations_dir.to_s )
 		end
 	end
@@ -97,6 +98,8 @@ class Symphony::Metronome::ScheduledEvent
 		@event    = Symphony::Metronome::IntervalExpression.parse( row[:expression], row[:created] )
 		@options  = row.delete( :options )
 		@id       = row.delete( :id )
+		@ds       = self.class.db[ :metronome ].filter( :id => self.id )
+
 		self.reset_runtime
 
 		unless self.class.splay.zero?
@@ -104,6 +107,9 @@ class Symphony::Metronome::ScheduledEvent
 			@runtime = self.runtime + rand( splay )
 		end
 	end
+
+	# The sequel dataset representing this event.
+	attr_reader :ds
 
 	# The parsed interval expression.
 	attr_reader :event
@@ -133,7 +139,21 @@ class Symphony::Metronome::ScheduledEvent
 		# Otherwise, the event should already be running (start time has already
 		# elapsed), so schedule it forward on it's next interval iteration.
 		#
-		@runtime = now + self.event.interval
+		# If it's a recurring event that has run before, consider the elapsed time
+		# as part of the next calculation.
+		#
+		row = self.ds.first
+		if self.event.recurring && row
+			last = row[ :lastrun ]
+			if last && now > last
+				@runtime = now + self.event.interval - ( now - last )
+			else
+				@runtime = now + self.event.interval
+			end
+
+		else
+			@runtime = now + self.event.interval
+		end
 	end
 
 
@@ -141,13 +161,32 @@ class Symphony::Metronome::ScheduledEvent
 	### deserialized options, the action ID to the supplied block if
 	### this event is okay to execute.
 	###
+	### If the event is recurring, perform additional checks against the
+	### last run time.
+	###
 	### Automatically remove the event if it has expired.
 	###
 	def fire
 		rv = self.event.fire?
 
+		# Just based on the expression parser, is this event ready to fire?
+		#
 		if rv
 			opts = Yajl.load( self.options )
+
+			# Don't fire recurring events unless their interval has elapsed.
+			# This prevents events from triggering when the daemon receives
+			# a HUP.
+			#
+			if self.event.recurring
+				now  = Time.now
+				last = self.ds.first[ :lastrun ]
+				return false if last && now - last < self.event.interval
+
+				# Mark the time this recurring event was fired.
+				self.ds.update( :lastrun => Time.now )
+			end
+
 			yield opts, self.id
 		end
 
@@ -160,7 +199,7 @@ class Symphony::Metronome::ScheduledEvent
 	###
 	def delete
 		self.log.debug "Removing action %p" % [ self.id ]
-		self.class.db[ :metronome ].filter( :id => self.id ).delete
+		self.ds.delete
 	end
 
 
