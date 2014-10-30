@@ -71,7 +71,7 @@
 		( 'milli'? 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year' ) 's'?;
 
 	start_identifiers  = ( 'start' | 'begin' 'n'? ) 'ing'?;
-	exec_identifiers   = ('run' | 'exec' 'ute'?);
+	exec_identifiers   = ('run' | 'exec' 'ute'? | 'do' );
 	ending_identifiers = ( ('for' | 'until' | 'during') | ('end'|'finish'|'stop'|'complet' 'e'?) 'ing'? );
 
 
@@ -99,7 +99,7 @@
 	# 2014-05-01 15:00:30
 	#
 	fulldate = digit{4} '-' digit{2} '-' digit{2}
-		( space+ digit{2} ':' digit{2} ( ':' digit{2} )? )?;
+		( space digit{2} ':' digit{2} ( ':' digit{2} )? )?;
 
 	# 10am
 	# 2:45pm
@@ -118,7 +118,7 @@
 	# other minute
 	#
 	interval = (
-			(( 'a' 'n'? | [1-9][0-9]* ( '.' [0-9]+ )? ) | 'other' | ordinals ) space+
+			(( 'a' 'n'? | [1-9][0-9]* ( '.' [0-9]+ )? ) | 'other' | ordinals ) space
 		)? interval_times;
 
 
@@ -129,21 +129,21 @@
 	start_time = date_or_time                         >set_mark %start_time;
 	start_interval = interval                     >set_mark %start_interval;
 
-	start_expression = ( (time_preposition space+)? start_time ) |
-		( (interval_preposition space+)? start_interval );
+	start_expression = ( (time_preposition space)? start_time ) |
+		( (interval_preposition space)? start_interval );
 
 	execute_time = date_or_time                     >set_mark %/execute_time;
 	execute_interval = interval                  >set_mark %execute_interval;
-	execute_multiplier = ( digit+ space+ 'times' )
+	execute_multiplier = ( digit+ space 'times' )
 		>set_mark %execute_multiplier @recurring;
 
 	execute_expression = (
 		# regular dates and intervals
-			( time_preposition space+ execute_time ) |
-			( ( interval_preposition | recur_preposition ) space+ execute_interval )
+			( time_preposition space execute_time ) |
+			( ( interval_preposition | recur_preposition ) space execute_interval )
 		) | (
 		# count + interval (10 times every minute)
-			execute_multiplier space+ ( recur_preposition space+ )? execute_interval
+			execute_multiplier space ( recur_preposition space )? execute_interval
 		) |
 		# count for 'timeboxed' intervals
 			execute_multiplier;
@@ -152,8 +152,8 @@
 	ending_time = date_or_time                       >set_mark %ending_time;
 	ending_interval = interval                   >set_mark %ending_interval;
 
-	ending_expression = ( (time_preposition space+)? ending_time ) |
-		( (interval_preposition space+)? ending_interval );
+	ending_expression = ( (time_preposition space)? ending_time ) |
+		( (interval_preposition space)? ending_interval );
 
 
 	########################################################################
@@ -161,26 +161,26 @@
 	########################################################################
 
 	Start = (
-		start:      start_identifiers space+                  -> StartTime,
+		start:      start_identifiers space                   -> StartTime,
 		StartTime:  start_expression                          -> final
 	);
 
 	Interval = (
 		start:
-		Decorators: ( exec_identifiers space+ )?             -> ExecuteTime,
+		Decorators: ( exec_identifiers space )?              -> ExecuteTime,
 		ExecuteTime: execute_expression                      -> final
 	);
 
 	Ending = (
-		start: space+ ending_identifiers space+              -> EndingTime,
+		start: space ending_identifiers space                -> EndingTime,
 		EndingTime: ending_expression                        -> final
 	);
 
 
 	main := (
-				( (Start space+)? Interval Ending? )   |
-				( Interval ( space+ Start )? Ending? ) |
-				( Interval Ending space+ Start )
+				( Start space Interval Ending? )   |
+				( Interval ( space Start )? Ending? ) |
+				( Interval Ending space Start )
 			) %set_valid @!set_invalid;
 }%%
 
@@ -205,6 +205,7 @@ using Symphony::Metronome::TimeRefinements
 ###  every other hour
 ###  once a day ending in 1 week
 ###  run once a minute for an hour starting in 6 days
+###  run each hour starting at 2010-01-05 09:00:00
 ###  10 times a minute for 2 days
 ###  run 45 times every hour
 ###  30 times per day
@@ -384,6 +385,14 @@ class Symphony::Metronome::IntervalExpression
 	### string and the +type+ of string (interval or exact time)
 	###
 	def set_starting( time_arg, type )
+		@starting_args ||= []
+		@starting_args << time_arg
+
+		# If we already have seen a start time, it's possible the parser
+		# was non-deterministic and this action has been executed multiple
+		# times. Re-parse the complete date string, overwriting any previous.
+		time_arg = @starting_args.join( ' ' )
+
 		start = self.get_time( time_arg, type )
 		@starting = start
 

@@ -323,6 +323,14 @@ describe Symphony::Metronome::IntervalExpression do
 			expect( parsed.interval ).to be( 60.0 )
 		end
 
+		it 'starting at 2010-01-02 09:00:00 run once a day' do |example|
+			parsed = described_class.parse( example.description )
+			expect( parsed.valid ).to be_truthy
+			expect( parsed.recurring ).to be_truthy
+			expect( parsed.starting ).to eq( past + 75600 )
+			expect( parsed.interval ).to be( 86400.0 )
+		end
+
 		it 'always sets a start time if one is not specified' do
 			parsed = described_class.parse( 'every 5 seconds'  )
 			expect( parsed.valid ).to be_truthy
