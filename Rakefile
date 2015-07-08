@@ -66,12 +66,12 @@ spec = Gem::Specification.new do |s|
 	s.required_rubygems_version = '>= 2.0.3'
 	s.required_ruby_version = '>= 2.0.0'
 
-	s.add_dependency 'symphony', '~> 0.6'
+	s.add_dependency 'symphony', '~> 0.9'
 	s.add_dependency 'sequel',   '~> 4'
 	s.add_dependency 'sqlite3',  '~> 1.3'
 
-	s.add_development_dependency 'rspec', '~> 3.0'
-	s.add_development_dependency 'simplecov', '~> 0.8'
+	s.add_development_dependency 'rspec', '~> 3.3'
+	s.add_development_dependency 'simplecov', '~> 0.9'
 	s.add_development_dependency 'timecop', '~> 0.7'
 end
 
@@ -133,12 +133,15 @@ end
 ### M A N I F E S T
 ########################################################################
 __END__
-lib/symphony/metronome.rb
-lib/symphony/tasks/scheduletask.rb
-lib/symphony/metronome/scheduler.rb
-lib/symphony/metronome/mixins.rb
-lib/symphony/metronome/intervalexpression.rb
-lib/symphony/metronome/scheduledevent.rb
+bin/metronome-exp
 data/symphony-metronome/migrations/20140419_initial.rb
 data/symphony-metronome/migrations/20141028_lastrun.rb
+lib/symphony/metronome/intervalexpression.rb
+lib/symphony/metronome/intervalexpression.rl
+lib/symphony/metronome/mixins.rb
+lib/symphony/metronome/scheduledevent.rb
+lib/symphony/metronome/scheduler.rb
+lib/symphony/metronome.rb
+lib/symphony/tasks/scheduletask.rb
 README.rdoc
+
