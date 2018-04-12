@@ -66,8 +66,8 @@ spec = Gem::Specification.new do |s|
 	s.required_rubygems_version = '>= 2.0.3'
 	s.required_ruby_version = '>= 2.0.0'
 
-	s.add_dependency 'symphony', '~> 0.9'
-	s.add_dependency 'sequel',   '~> 4'
+	s.add_dependency 'symphony', '~> 0.11'
+	s.add_dependency 'sequel',   '~> 5'
 	s.add_dependency 'sqlite3',  '~> 1.3'
 
 	s.add_development_dependency 'rspec', '~> 3.3'
