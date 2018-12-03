@@ -9,10 +9,10 @@ module Symphony::Metronome
 	       Configurability
 
 	# Library version constant
-	VERSION = '0.2.2'
+	VERSION = '0.2.3'
 
 	# Version-control revision constant
-	REVISION = %q$Revision$
+	REVISION = %q$Revision: e3d11b2c9e48 $
 
 	# The name of the environment variable to check for config file overrides
 	CONFIG_ENV = 'METRONOME_CONFIG'
@@ -23,11 +23,11 @@ module Symphony::Metronome
 	# The data directory that contains migration files.
 	#
 	DATADIR = if ENV['METRONOME_DATADIR']
-				   Pathname.new( ENV['METRONOME_DATADIR'] )
-			   elsif Gem.datadir( 'symphony-metronome' )
-				   Pathname.new( Gem.datadir('symphony-metronome') )
+				   Pathname( ENV['METRONOME_DATADIR'] )
+			   elsif Gem.loaded_specs[ 'symphony-metronome' ] && File.exist?( Gem.loaded_specs['symphony-metronome'].datadir )
+				   Pathname( Gem.loaded_specs['symphony-metronome'].datadir )
 			   else
-				   Pathname.new( __FILE__ ).dirname.parent.parent + 'data/symphony-metronome'
+				   Pathname( __FILE__ ).dirname.parent.parent + 'data/symphony-metronome'
 			   end
 
 
