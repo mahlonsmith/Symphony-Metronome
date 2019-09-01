@@ -156,8 +156,11 @@ gem install symphony-metronome
 
 ## Contributing
 
-You can check out the current development source with Mercurial via its
-[project page](http://bitbucket.org/mahlon/symphony-metronome). 
+You can check out the current development source with Mercurial
+[here](http://code.martini.nu/symphony-metronome), or via a mirror:
+
+ * github: https://github.com/mahlonsmith/Symphony-Metronome
+ * SourceHut: https://hg.sr.ht/~mahlon/Symphony-Metronome
 
 After checking out the source, run:
 
