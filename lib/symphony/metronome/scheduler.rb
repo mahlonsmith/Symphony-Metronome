@@ -131,17 +131,19 @@ class Symphony::Metronome::Scheduler
 	def process_events
 		now = Time.now
 
+		events_to_delete = []
+		events_to_add = []
 		self.queue.each do |ev|
 			next unless now >= ev.runtime
 
-			self.queue.delete( ev )
+			events_to_delete << ev
 			rv = ev.fire( &@proc )
 
 			# Reschedule the event and place it back on the queue.
 			#
 			if ev.event.recurring
 				ev.reset_runtime
-				self.queue.add( ev ) unless rv.nil?
+				events_to_add << ev unless rv.nil?
 
 			# It was a single run event, torch it!
 			#
@@ -150,6 +152,9 @@ class Symphony::Metronome::Scheduler
 
 			end
 		end
+
+		events_to_delete.map{|e| self.queue.delete( e ) }
+		events_to_add.map{|e| self.queue.add( e ) }
 	end
 
 end # Symphony::Metronome::Scheduler
