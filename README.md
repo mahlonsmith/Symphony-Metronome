@@ -17,6 +17,8 @@ Metronome is an interval scheduler and task runner.  It can be used locally as a
 cron replacement, or as a network-wide job executor.  It is intended to be run
 alongside Symphony, a Ruby AMQP event consumer.
 
+[![Gem Version](https://badge.fury.io/rb/symphony-metronome.svg)](https://badge.fury.io/rb/symphony-metronome)
+
 Events are stored via simple database rows, and optionally themselves managed
 via AMQP events.  Interval/time values are expressed with intuitive English
 phrases, ie.: 'at 2pm', or 'Starting in 20 minutes, run every 10 seconds and
