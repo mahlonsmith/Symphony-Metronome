@@ -1,0 +1,9 @@
+Session.vim
+certs/*
+coverage/*
+docs/*
+gem.deps.rb.lock
+*.so
+tmp/*
+lib/symphony/metronome/intervalexpression.rb
+

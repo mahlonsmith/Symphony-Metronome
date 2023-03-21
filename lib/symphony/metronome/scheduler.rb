@@ -17,22 +17,15 @@ class Symphony::Metronome::Scheduler
 	# Signals the daemon responds to.
 	SIGNALS = [ :HUP, :INT, :TERM ]
 
-	CONFIG_DEFAULTS = {
-		:listen => false
-	}
 
-	class << self
+	### Configurability API.
+	###
+	configurability do
+
 		# Should Metronome register and schedule events via AMQP?
 		# If +false+, you'll need a separate way to add event actions
 		# to the database, and manually HUP the daemon.
-		attr_reader :listen
-	end
-
-	### Configurability API
-	###
-	def self::configure( config=nil )
-		config = self.defaults.merge( config || {} )
-		@listen = config.delete( :listen )
+		setting :listen, default: false
 	end
 
 

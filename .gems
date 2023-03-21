@@ -1,8 +1,0 @@
-autotest -v4.4.6
-configurability -v2.1.1
-sequel -v5.4.0
-sqlite3 -v1.3.9
-symphony -v0.9.2
-rspec -v3.3.1
-timecop -v0.7.1
-simplecov -v0.9.1

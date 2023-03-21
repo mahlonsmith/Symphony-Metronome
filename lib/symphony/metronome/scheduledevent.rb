@@ -21,19 +21,17 @@ class Symphony::Metronome::ScheduledEvent
 	config_key :metronome
 
 
-	# Configure defaults.
-	#
-	CONFIG_DEFAULTS = {
-		:db    => 'sqlite:///tmp/metronome.db',
-		:splay => 0
-	}
+	### Configurability API.
+	###
+	configurability do
 
-	class << self
+		##
 		# A Sequel-style DB connection URI.
-		attr_reader :db
+		setting :db, default: 'sqlite:///tmp/metronome.db'
 
+		##
 		# Adjust recurring intervals by a random window.
-		attr_reader :splay
+		setting :splay, default: 0
 	end
 
 
@@ -62,7 +60,6 @@ class Symphony::Metronome::ScheduledEvent
 	### Delete any rows that are invalid expressions.
 	###
 	def self::load
-		now    = Time.now
 		events = SortedSet.new
 
 		# Force reset the DB handle.

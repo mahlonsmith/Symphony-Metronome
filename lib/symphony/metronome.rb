@@ -9,10 +9,7 @@ module Symphony::Metronome
 	       Configurability
 
 	# Library version constant
-	VERSION = '0.2.3'
-
-	# Version-control revision constant
-	REVISION = %q$Revision: e3d11b2c9e48 $
+	VERSION = '0.3.0'
 
 	# The name of the environment variable to check for config file overrides
 	CONFIG_ENV = 'METRONOME_CONFIG'

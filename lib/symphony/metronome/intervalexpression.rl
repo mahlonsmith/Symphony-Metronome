@@ -239,7 +239,7 @@ class Symphony::Metronome::IntervalExpression
 	### an expression was generated, you can 'reconstitute' an interval
 	### object this way.
 	###
-	def self::parse( exp, time=nil )
+	def self::parse( exp, time=Time.now )
 
 		# Normalize the expression before parsing
 		#
@@ -250,7 +250,7 @@ class Symphony::Metronome::IntervalExpression
 			gsub( /([:\-])+/, '\1' ).                    # collapse multiple - or : chars
 			gsub( /\.+$/, '' )                           # trailing periods
 
-		event = new( exp, time || Time.now )
+		event = new( exp, time )
 		data  = event.instance_variable_get( :@data )
 
 		# Ragel interface variables

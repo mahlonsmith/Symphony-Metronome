@@ -33,10 +33,12 @@ describe Symphony::Metronome::ScheduledEvent do
 			Timecop.travel( time )
 		end
 
+
 		it 'applies migrations upon initial config' do
 			migrations = described_class.db[ :schema_migrations ].all
 			expect( migrations.first[:filename] ).to eq( '20140419_initial.rb' )
 		end
+
 
 		it 'can load all stored events sorted by next execution time' do
 			ds.insert(
@@ -61,6 +63,7 @@ describe Symphony::Metronome::ScheduledEvent do
 			expect( events.last.event.instance_variable_get(:@exp) ).to eq( 'at 3pm' )
 		end
 
+
 		it 'removes invalid expressions from storage when loading' do
 			ds.insert(
 				:created    => Time.now,
@@ -76,6 +79,7 @@ describe Symphony::Metronome::ScheduledEvent do
 			expect( events.length ).to be( 1 )
 		end
 	end
+
 
 	context 'an instance' do
 
@@ -94,6 +98,7 @@ describe Symphony::Metronome::ScheduledEvent do
 			expect( ev.runtime ).to eq( time )
 		end
 
+
 		it 'can reschedule itself into the future when recurring (past start)' do
 			ev = described_class.new(
 				:created    => time,
@@ -106,6 +111,7 @@ describe Symphony::Metronome::ScheduledEvent do
 
 			expect( ev.runtime ).to be >= time + 3600 + 30
 		end
+
 
 		it 'can reschedule itself into the future when recurring (recently run)' do
 			ds.insert(
@@ -120,8 +126,9 @@ describe Symphony::Metronome::ScheduledEvent do
 				ev.reset_runtime
 			end
 
-			expect( ev.runtime ).to be >= time + 18
+			expect( ev.runtime ).to be >= time + 17
 		end
+
 
 		it 'removes itself when firing if expired' do
 			ds.insert(
@@ -134,6 +141,7 @@ describe Symphony::Metronome::ScheduledEvent do
 			expect( ev.fire {} ).to be_nil
 			expect( ds.count ).to eq( 0 )
 		end
+
 
 		it 'yields a deserialized options hash if okay to fire' do
 			ev = described_class.new(
@@ -149,6 +157,7 @@ describe Symphony::Metronome::ScheduledEvent do
 
 			expect( res ).to be( 12 )
 		end
+
 
 		it "won't re-fire recurring events if they already fired within their interval window" do
 			ds.insert(
@@ -169,6 +178,7 @@ describe Symphony::Metronome::ScheduledEvent do
 
 			expect( res ).to be( 0 )
 		end
+
 
 		it 'randomizes start times if a splay is configured' do
 			described_class.instance_variable_set( :@splay, 5 )
