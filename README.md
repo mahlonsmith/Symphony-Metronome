@@ -1,7 +1,7 @@
 # Metronome
 
 home
-: https://code.martini.nu/fossil/symphony-metronome
+: https://code.martini.nu/mahlon/symphony-metronome
 
 docs
 : https://martini.nu/docs/symphony-metronome
@@ -169,13 +169,9 @@ gem install symphony-metronome
 
 ## Contributing
 
-You can check out the source via Fossil from the following uri:
-
-% fossil clone https://code.martini.nu/fossil/symphony-metronome
-
-or via its GitHub mirror at:
-
-% git clone https://github.com/mahlonsmith/Symphony-Metronome
+You can check out the source via Git/Jujutsu from its
+[home repo](https://code.martini.nu/mahlon/symphony-metronome),
+or its [github mirror](https://github.com/mahlonsmith/Symphony-Metronome).
 
 After checking out the source, run:
 
@@ -186,7 +182,7 @@ This will install dependencies, and do any other necessary setup for
 development.
 
 Please report any issues
-[here](https://code.martini.nu/fossil/symphony-metronome/tktnew).
+[here](https://code.martini.nu/mahlon/symphony-metronome/issues).
 
 
 ## Authors
@@ -223,4 +219,3 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
